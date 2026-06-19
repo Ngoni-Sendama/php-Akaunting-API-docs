@@ -1,5 +1,30 @@
 # Using Akaunting API in Laravel Projects
 
+## Table of Contents
+
+- [Overview](#overview)
+- [Environment Configuration](#environment-configuration)
+- [API Endpoints](#api-endpoints)
+  - [Users](#users)
+    - [List Users](#list-users)
+  - [Items](#items)
+    - [List Items](#list-items)
+  - [Companies](#companies)
+    - [List Companies](#list-companies)
+  - [Customers (Contacts)](#customers-contacts)
+    - [List Customers](#list-customers)
+    - [Create Customer](#create-customer)
+  - [Invoices (Documents)](#invoices-documents)
+    - [List Invoices](#list-invoices)
+    - [Create Invoice](#create-invoice)
+    - [Get Invoice](#get-invoice)
+    - [Update Invoice](#update-invoice)
+    - [Add Invoice Payment](#add-invoice-payment)
+    - [Delete Invoice](#delete-invoice)
+  - [Transactions](#transactions)
+    - [Create Expense Transaction](#create-expense-transaction)
+    - [List Expense Transactions](#list-expense-transactions)
+
 ## Overview
 This documentation explains how to integrate the Akaunting API into a Laravel application. Akaunting is an open-source accounting software, and its API allows you to programmatically manage invoices, contacts, accounts, and other financial data.
 
