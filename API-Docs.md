@@ -14,7 +14,11 @@ AKAUNTING_PASSWORD=your_password
 AKAUNTING_PAGE=1
 AKAUNTING_LIMIT=25
 AKAUNTING_COMPANY_ID=your_company_id
+akaunting_tax_id=akaunting_tax_id
+akaunting_currency_id=akaunting_currency_id
 ```
+
+> **Note:** These values can be stored in `.env` or in your database as Akaunting config.
 
 ## API Endpoints
 
@@ -834,6 +838,287 @@ echo $res->getBody();
                 }
             ]
         }
+    }
+}
+```
+
+**Update Invoice**
+
+`PUT {{akaunting_url}}/documents/{document_id}?search=type:invoice`
+
+**Authorization**
+- Basic Auth
+  - Username: {{akaunting_email}}
+  - Password: {{akaunting_password}}
+
+**Request Headers**
+- `X-Company`: {{akaunting_company_id}}
+
+**Query Parameters**
+
+| Parameter | Description | Example |
+|-----------|-------------|---------|
+| `type` | Document type | `invoice` |
+| `search` | Filter type | `type:invoice` |
+| `document_number` | Invoice number | `INV-00001` |
+| `status` | Draft or paid | `draft` |
+| `category_id` | Income category ID | `1` |
+| `account_id` | Account ID | `1` |
+| `currency_code` | Currency code | `EUR` |
+| `currency_rate` | Currency rate | `1` |
+| `issued_at` | Issue date | `2021-10-21` |
+| `due_at` | Due date | `2021-10-29` |
+| `contact_id` | Customer ID | `1` |
+| `contact_name` | Customer name | `Name` |
+| `contact_email` | Customer email | `mail@mail.com` |
+| `contact_address` | Customer address | `Client address` |
+| `notes` | Invoice notes | `This is note for invoice` |
+| `items[0][item_id]` | Item ID | `1` |
+| `items[0][name]` | Item name | `Service` |
+| `items[0][quantity]` | Quantity | `2` |
+| `items[0][price]` | Unit price | `12` |
+| `items[0][total]` | Line total | `24` |
+| `items[0][discount]` | Discount | `0` |
+| `items[0][description]` | Item description | `This is custom item description` |
+| `items[0][tax_ids][0]` | Tax ID | `1` |
+
+**Body (form-data)**
+- `attachment[0]`: File attachment (e.g., `simple.pdf`)
+
+**Code Snippet (PHP)**
+```php
+<?php
+$client = new Client();
+$headers = [
+  'X-Company' => '399523',
+  'Authorization' => '[[Authorization-masked-secret]]'
+];
+$options = [
+  'multipart' => [
+    [
+      'name' => 'attachment[0]',
+      'contents' => 'simple.pdf'
+    ]
+]];
+$request = new Request('PUT', 'https://app.akaunting.com/api/documents/1?type=invoice&category_id=1&document_number=INV-00001&search=type:invoice&status=draft&issued_at=2021-10-21&due_at=2021-10-29&account_id=1&currency_code=EUR&currency_rate=1&notes=This is note for invoice&contact_id=1&contact_name=Name&contact_email=mail@mail.com&contact_address=Client address&items[0][item_id]=1&items[0][name]=Service&items[0][quantity]=2&items[0][price]=12&items[0][total]=24&items[0][discount]=0&items[0][description]=This is custom item description&items[0][tax_ids][0]=1&items[0][tax_ids][1]=2', $headers);
+$res = $client->sendAsync($request, $options)->wait();
+echo $res->getBody();
+```
+
+**Add Invoice Payment**
+
+`POST {{akaunting_url}}/documents/{{akaunting_document_id}}/transactions`
+
+**Authorization**
+- Basic Auth
+  - Username: {{akaunting_email}}
+  - Password: {{akaunting_password}}
+
+**Request Headers**
+- `X-Company`: {{akaunting_company_id}}
+
+**Body (form-data)**
+
+| Parameter | Description | Example |
+|-----------|-------------|---------|
+| `company_id` | Company ID | `1` |
+| `amount` | Payment amount | `10` |
+| `number` | Transaction number | `TRA-00001` |
+| `reference` | Payment reference | |
+| `document_id` | Invoice ID | `1` |
+| `category_id` | Category ID | `2` |
+| `currency_code` | Currency code | `USD` |
+| `currency_rate` | Currency rate | `1` |
+| `type` | Transaction type | `income` |
+| `description` | Payment description | |
+| `payment_method` | Payment method | `offline-payments.cash.1` |
+| `account_id` | Account ID | `1` |
+| `paid_at` | Payment date | `2022-08-18 23:36:52` |
+| `currency` | Currency name | `US Dollar` |
+
+**Code Snippet (PHP)**
+```php
+<?php
+$client = new Client();
+$headers = [
+  'X-Company' => '399523',
+  'Authorization' => '[[Authorization-masked-secret]]'
+];
+$options = [
+  'multipart' => [
+    [
+      'name' => 'company_id',
+      'contents' => '1'
+    ],
+    [
+      'name' => 'amount',
+      'contents' => '10'
+    ],
+    [
+      'name' => 'number',
+      'contents' => 'TRA-00001'
+    ],
+    [
+      'name' => 'reference',
+      'contents' => ''
+    ],
+    [
+      'name' => 'document_id',
+      'contents' => '1'
+    ],
+    [
+      'name' => 'category_id',
+      'contents' => '2'
+    ],
+    [
+      'name' => 'currency_code',
+      'contents' => 'USD'
+    ],
+    [
+      'name' => 'currency_rate',
+      'contents' => '1'
+    ],
+    [
+      'name' => 'type',
+      'contents' => 'income'
+    ],
+    [
+      'name' => 'description',
+      'contents' => ''
+    ],
+    [
+      'name' => 'payment_method',
+      'contents' => 'offline-payments.cash.1'
+    ],
+    [
+      'name' => 'account_id',
+      'contents' => '1'
+    ],
+    [
+      'name' => 'paid_at',
+      'contents' => '2022-08-18 23:36:52'
+    ],
+    [
+      'name' => 'currency',
+      'contents' => 'US Dollar'
+    ]
+]];
+$request = new Request('POST', 'https://app.akaunting.com/api/documents/1/transactions', $headers);
+$res = $client->sendAsync($request, $options)->wait();
+echo $res->getBody();
+```
+
+**Delete Invoice**
+
+`DELETE {{akaunting_url}}/documents/{{akaunting_document_id}}`
+
+**Authorization**
+- Basic Auth
+  - Username: {{akaunting_email}}
+  - Password: {{akaunting_password}}
+
+**Request Headers**
+- `X-Company`: {{akaunting_company_id}}
+
+**Code Snippet (PHP)**
+```php
+<?php
+$client = new Client();
+$headers = [
+  'X-Company' => '399523',
+  'Authorization' => '[[Authorization-masked-secret]]'
+];
+$request = new Request('DELETE', 'https://app.akaunting.com/api/documents/1', $headers);
+$res = $client->sendAsync($request)->wait();
+echo $res->getBody();
+```
+
+### Transactions
+
+**Create Expense Transaction**
+
+`POST {{akaunting_url}}/transactions?search=type:expense`
+
+**Authorization**
+- Basic Auth
+  - Username: {{akaunting_email}}
+  - Password: {{akaunting_password}}
+
+**Request Headers**
+- `X-Company`: {{akaunting_company_id}}
+
+**Query Parameters**
+
+| Parameter | Description | Example |
+|-----------|-------------|---------|
+| `search` | Filter type | `type:expense` |
+| `type` | Transaction type | `expense` |
+| `account_id` | Account ID | `1` |
+| `category_id` | Category ID | `1` |
+| `contact_id` | Contact ID | `1` |
+| `paid_at` | Payment date | `2021-04-15` |
+| `reference` | Payment reference | `456tfd4` |
+| `payment_method` | Payment method | `cash` |
+
+**Code Snippet (PHP)**
+```php
+<?php
+$client = new Client();
+$headers = [
+  'X-Company' => '399523',
+  'Authorization' => '[[Authorization-masked-secret]]'
+];
+$request = new Request('POST', 'https://app.akaunting.com/api/transactions?search=type:expense&account_id=1&category_id=1&contact_id=1&paid_at=2021-04-15&reference=456tfd4&payment_method=cash&type=expense', $headers);
+$res = $client->sendAsync($request)->wait();
+echo $res->getBody();
+```
+
+**List Expense Transactions**
+
+`GET {{akaunting_url}}/transactions?search=type:expense&page={{akaunting_page}}&limit={{akaunting_limit}}`
+
+**Authorization**
+- Basic Auth
+  - Username: {{akaunting_email}}
+  - Password: {{akaunting_password}}
+
+**Request Headers**
+- `X-Company`: {{akaunting_company_id}}
+
+**Query Parameters**
+- `search`: `type:expense`
+- `page`: {{akaunting_page}}
+- `limit`: {{akaunting_limit}}
+
+**Code Snippet (PHP)**
+```php
+<?php
+$client = new Client();
+$headers = [
+  'X-Company' => '399523',
+  'Authorization' => '[[Authorization-masked-secret]]'
+];
+$request = new Request('GET', 'https://app.akaunting.com/api/transactions?search=type:expense&page=1&limit=25', $headers);
+$res = $client->sendAsync($request)->wait();
+echo $res->getBody();
+```
+
+**Example Response**
+```json
+{
+    "data": [],
+    "links": {
+        "first": "https://app.akaunting.com/api/transactions?page=1",
+        "last": "https://app.akaunting.com/api/transactions?page=1",
+        "prev": null,
+        "next": null
+    },
+    "meta": {
+        "current_page": 1,
+        "from": null,
+        "last_page": 1,
+        "per_page": 25,
+        "total": 0
     }
 }
 ```
