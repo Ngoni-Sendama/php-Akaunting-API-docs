@@ -14,19 +14,6 @@ AKAUNTING_PASSWORD=your_password
 AKAUNTING_PAGE=1
 AKAUNTING_LIMIT=25
 AKAUNTING_COMPANY_ID=your_company_id
-AKAUNTING_ITEM_ID=your_item_id
-AKAUNTING_USER_ID=your_user_id
-AKAUNTING_CONTACT_ID=your_contact_id
-AKAUNTING_DOCUMENT_ID=your_document_id
-AKAUNTING_ACCOUNT_ID=your_account_id
-AKAUNTING_TRANSACTION_ID=your_transaction_id
-AKAUNTING_TRANSFER_ID=your_transfer_id
-AKAUNTING_TRANSFER_FROM_ACCOUNT_ID=your_transfer_from_account_id
-AKAUNTING_TRANSFER_TO_ACCOUNT_ID=your_transfer_to_account_id
-AKAUNTING_CATEGORY_ID=your_category_id
-AKAUNTING_CURRENCY_ID=your_currency_id
-AKAUNTING_TAX_ID=your_tax_id
-AKAUNTING_REPORT_ID=your_report_id
 ```
 
 ## API Endpoints
