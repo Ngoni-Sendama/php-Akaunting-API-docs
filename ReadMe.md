@@ -31,8 +31,29 @@ When using this repo as context:
 
 ## Current Endpoints
 
-- Users — List users
-- Companies — List companies
+### Users
+- List users
+
+### Companies
+- List companies
+
+### Items
+- List items
+
+### Customers (Contacts)
+- List customers
+- Create customer
+
+### Invoices (Documents)
+- List invoices
+- Create invoice
+- Get invoice
+- Update invoice
+- Delete invoice
+- Add invoice payment
+
+### Transactions
+- Create expense transaction
+- List expense transactions
 
 More endpoints will be added as they are documented.
-git 
