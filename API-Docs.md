@@ -14,8 +14,8 @@ AKAUNTING_PASSWORD=your_password
 AKAUNTING_PAGE=1
 AKAUNTING_LIMIT=25
 AKAUNTING_COMPANY_ID=your_company_id
-akaunting_tax_id=akaunting_tax_id
-akaunting_currency_id=akaunting_currency_id
+AKAUNTING_CURRENCY_ID=your_currency_id
+AKAUNTING_TAX_ID=your_tax_id
 ```
 
 > **Note:** These values can be stored in `.env` or in your database as Akaunting config.

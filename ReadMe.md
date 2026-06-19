@@ -28,6 +28,10 @@ When using this repo as context:
 | `AKAUNTING_COMPANY_ID` | Company identifier | `399523` |
 | `AKAUNTING_PAGE` | Pagination page | `1` |
 | `AKAUNTING_LIMIT` | Results per page | `25` |
+| `AKAUNTING_CURRENCY_ID` | Default currency ID | `1` |
+| `AKAUNTING_TAX_ID` | Default tax ID | `1` |
+
+> **Note:** These values can be stored in `.env` or in your database as Akaunting config. Dynamic IDs (document_id, contact_id, item_id, etc.) are per-request values — store them in your database.
 
 ## Current Endpoints
 
