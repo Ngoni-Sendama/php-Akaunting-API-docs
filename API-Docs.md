@@ -11,8 +11,9 @@
     - [Items](#items)
     - [Companies](#companies)
     - [Customers (Contacts)](#customers-contacts)
-    - [Invoices (Documents)](#invoices-documents)
-    - [Transactions](#transactions)
+  - [Invoices (Documents)](#invoices-documents)
+  - [Bills](#bills)
+  - [Transactions](#transactions)
 
 ## Overview
 This documentation explains how to integrate the Akaunting API into a Laravel application. Akaunting is an open-source accounting software, and its API allows you to programmatically manage invoices, contacts, accounts, and other financial data.
@@ -1046,6 +1047,1001 @@ $request = new Request('DELETE', 'https://app.akaunting.com/api/documents/1', $h
 $res = $client->sendAsync($request)->wait();
 echo $res->getBody();
 ```
+
+### Bills
+
+**List Bills**
+
+`GET {{akaunting_url}}/documents?search=type:bill&page={{akaunting_page}}&limit={{akaunting_limit}}`
+
+**Authorization**
+- Basic Auth
+  - Username: {{akaunting_email}}
+  - Password: {{akaunting_password}}
+
+**Request Headers**
+- `X-Company`: {{akaunting_company_id}}
+
+**Query Parameters**
+- `search`: `type:bill`
+- `page`: {{akaunting_page}}
+- `limit`: {{akaunting_limit}}
+
+**Code Snippet (PHP)**
+```php
+<?php
+$client = new Client();
+$headers = [
+  'X-Company' => '399523',
+  'Authorization' => '[[Authorization-masked-secret]]'
+];
+$request = new Request('GET', 'https://app.akaunting.com/api/documents?search=type:bill&page=1&limit=25', $headers);
+$res = $client->sendAsync($request)->wait();
+echo $res->getBody();
+```
+
+**Example Response**
+```json
+{
+    "data": [
+        {
+            "id": 3769103,
+            "company_id": 399523,
+            "type": "bill",
+            "document_number": "BILL-00001",
+            "order_number": null,
+            "status": "paid",
+            "issued_at": "2026-06-20T15:31:11+01:00",
+            "due_at": "2026-06-20T15:31:11+01:00",
+            "amount": 20,
+            "amount_formatted": "$20.00",
+            "category_id": 2479262,
+            "currency_code": "USD",
+            "currency_rate": 1,
+            "contact_id": 2380643,
+            "contact_name": "James Sendu",
+            "contact_email": null,
+            "contact_tax_number": null,
+            "contact_phone": null,
+            "contact_address": null,
+            "contact_city": null,
+            "contact_zip_code": null,
+            "contact_state": null,
+            "contact_country": "ZW",
+            "notes": null,
+            "attachment": false,
+            "created_from": "core::ui",
+            "created_by": 419518,
+            "created_at": "2026-06-20T15:31:11+01:00",
+            "updated_at": "2026-06-20T15:31:25+01:00",
+            "category": {
+                "id": 2479262,
+                "company_id": 399523,
+                "name": "Other",
+                "type": "expense",
+                "color": "#e5e5e5",
+                "enabled": true,
+                "parent_id": null,
+                "created_from": "core::seed",
+                "created_by": 2,
+                "created_at": "2026-06-19T13:27:06+01:00",
+                "updated_at": "2026-06-19T13:27:06+01:00"
+            },
+            "currency": {
+                "id": 1293248,
+                "company_id": 399523,
+                "name": "US Dollar",
+                "code": "USD",
+                "rate": 1,
+                "enabled": true,
+                "precision": 2,
+                "symbol": "$",
+                "symbol_first": 1,
+                "decimal_mark": ".",
+                "thousands_separator": ",",
+                "created_from": "core::seed",
+                "created_by": 2,
+                "created_at": "2026-06-19T13:27:06+01:00",
+                "updated_at": "2026-06-19T13:27:06+01:00"
+            },
+            "contact": {
+                "id": 2380643,
+                "company_id": 399523,
+                "user_id": null,
+                "type": "vendor",
+                "name": "James Sendu",
+                "email": null,
+                "phone": null,
+                "address": null,
+                "website": null,
+                "currency_code": "USD",
+                "enabled": true,
+                "reference": null,
+                "created_from": "core::ui",
+                "created_by": 419518,
+                "created_at": "2026-06-20T15:30:33+01:00",
+                "updated_at": "2026-06-20T15:30:33+01:00",
+                "contact_persons": {
+                    "data": []
+                }
+            },
+            "histories": {
+                "data": [
+                    {
+                        "id": 8727288,
+                        "company_id": 399523,
+                        "type": "bill",
+                        "document_id": 3769103,
+                        "status": "draft",
+                        "notify": 0,
+                        "description": "BILL-00001 added!",
+                        "created_from": "core::ui",
+                        "created_by": 419518,
+                        "created_at": "2026-06-20T15:31:11+01:00",
+                        "updated_at": "2026-06-20T15:31:11+01:00"
+                    },
+                    {
+                        "id": 8727289,
+                        "company_id": 399523,
+                        "type": "bill",
+                        "document_id": 3769103,
+                        "status": "received",
+                        "notify": 0,
+                        "description": "Bill marked as received!",
+                        "created_from": "core::ui",
+                        "created_by": 419518,
+                        "created_at": "2026-06-20T15:31:16+01:00",
+                        "updated_at": "2026-06-20T15:31:16+01:00"
+                    },
+                    {
+                        "id": 8727290,
+                        "company_id": 399523,
+                        "type": "bill",
+                        "document_id": 3769103,
+                        "status": "paid",
+                        "notify": 0,
+                        "description": "$20.00 Payment",
+                        "created_from": "core::ui",
+                        "created_by": 419518,
+                        "created_at": "2026-06-20T15:31:25+01:00",
+                        "updated_at": "2026-06-20T15:31:25+01:00"
+                    }
+                ]
+            },
+            "items": {
+                "data": [
+                    {
+                        "id": 69703395,
+                        "company_id": 399523,
+                        "type": "bill",
+                        "document_id": 3769103,
+                        "item_id": 5848874,
+                        "name": "Electricity",
+                        "description": "Electricity",
+                        "price": 20,
+                        "price_formatted": "$20.00",
+                        "total": 20,
+                        "total_formatted": "$20.00",
+                        "created_from": "core::ui",
+                        "created_by": 419518,
+                        "created_at": "2026-06-20T15:31:11+01:00",
+                        "updated_at": "2026-06-20T15:31:11+01:00",
+                        "taxes": {
+                            "data": []
+                        }
+                    }
+                ]
+            },
+            "item_taxes": {
+                "data": []
+            },
+            "totals": {
+                "data": [
+                    {
+                        "id": 135807479,
+                        "company_id": 399523,
+                        "type": "bill",
+                        "document_id": 3769103,
+                        "code": "sub_total",
+                        "name": "invoices.sub_total",
+                        "amount": 20,
+                        "amount_formatted": "$20.00",
+                        "sort_order": 1,
+                        "created_from": "core::ui",
+                        "created_by": 419518,
+                        "created_at": "2026-06-20T15:31:11+01:00",
+                        "updated_at": "2026-06-20T15:31:11+01:00"
+                    },
+                    {
+                        "id": 135807480,
+                        "company_id": 399523,
+                        "type": "bill",
+                        "document_id": 3769103,
+                        "code": "total",
+                        "name": "invoices.total",
+                        "amount": 20,
+                        "amount_formatted": "$20.00",
+                        "sort_order": 2,
+                        "created_from": "core::ui",
+                        "created_by": 419518,
+                        "created_at": "2026-06-20T15:31:11+01:00",
+                        "updated_at": "2026-06-20T15:31:11+01:00"
+                    }
+                ]
+            },
+            "transactions": {
+                "data": [
+                    {
+                        "id": 7108991,
+                        "number": "TRA-00026",
+                        "company_id": 399523,
+                        "type": "expense",
+                        "account_id": 497848,
+                        "paid_at": "2026-06-20T15:31:25+01:00",
+                        "amount": 20,
+                        "amount_formatted": "$20.00",
+                        "currency_code": "USD",
+                        "currency_rate": 1,
+                        "document_id": 3769103,
+                        "contact_id": 2380643,
+                        "description": null,
+                        "category_id": 2479262,
+                        "payment_method": "offline-payments.cash.1",
+                        "reference": null,
+                        "parent_id": 0,
+                        "split_id": null,
+                        "attachment": false,
+                        "created_from": "core::ui",
+                        "created_by": 419518,
+                        "created_at": "2026-06-20T15:31:25+01:00",
+                        "updated_at": "2026-06-20T15:31:25+01:00",
+                        "account": {
+                            "id": 497848,
+                            "company_id": 399523,
+                            "type": "bank",
+                            "name": "Cash",
+                            "number": "1",
+                            "currency_code": "USD",
+                            "opening_balance": 0,
+                            "opening_balance_formatted": "$0.00",
+                            "current_balance": -20,
+                            "current_balance_formatted": "-$20.00",
+                            "bank_name": "Cash",
+                            "bank_phone": null,
+                            "bank_address": null,
+                            "enabled": true,
+                            "created_from": "core::seed",
+                            "created_by": 2,
+                            "created_at": "2026-06-19T13:27:06+01:00",
+                            "updated_at": "2026-06-19T13:27:06+01:00"
+                        },
+                        "category": {
+                            "id": 2479262,
+                            "company_id": 399523,
+                            "name": "Other",
+                            "type": "expense",
+                            "color": "#e5e5e5",
+                            "enabled": true,
+                            "parent_id": null,
+                            "created_from": "core::seed",
+                            "created_by": 2,
+                            "created_at": "2026-06-19T13:27:06+01:00",
+                            "updated_at": "2026-06-19T13:27:06+01:00"
+                        },
+                        "currency": {
+                            "id": 1293248,
+                            "company_id": 399523,
+                            "name": "US Dollar",
+                            "code": "USD",
+                            "rate": 1,
+                            "enabled": true,
+                            "precision": 2,
+                            "symbol": "$",
+                            "symbol_first": 1,
+                            "decimal_mark": ".",
+                            "thousands_separator": ",",
+                            "created_from": "core::seed",
+                            "created_by": 2,
+                            "created_at": "2026-06-19T13:27:06+01:00",
+                            "updated_at": "2026-06-19T13:27:06+01:00"
+                        },
+                        "contact": {
+                            "id": 2380643,
+                            "company_id": 399523,
+                            "user_id": null,
+                            "type": "vendor",
+                            "name": "James Sendu",
+                            "email": null,
+                            "phone": null,
+                            "address": null,
+                            "website": null,
+                            "currency_code": "USD",
+                            "enabled": true,
+                            "reference": null,
+                            "created_from": "core::ui",
+                            "created_by": 419518,
+                            "created_at": "2026-06-20T15:30:33+01:00",
+                            "updated_at": "2026-06-20T15:30:33+01:00",
+                            "contact_persons": {
+                                "data": []
+                            }
+                        },
+                        "taxes": {
+                            "data": []
+                        }
+                    }
+                ]
+            },
+            "journals": {
+                "data": [
+                    {
+                        "id": 6477446,
+                        "account_id": 3862707,
+                        "account_name": "Accounts Payable",
+                        "entry_type": "total",
+                        "debit": null,
+                        "credit": 20,
+                        "currency_code": "USD"
+                    },
+                    {
+                        "id": 6477447,
+                        "account_id": 3862727,
+                        "account_name": "General Expenses",
+                        "entry_type": "item",
+                        "debit": 20,
+                        "credit": null,
+                        "currency_code": "USD"
+                    }
+                ]
+            }
+        }
+    ],
+    "links": {
+        "first": "https://app.akaunting.com/api/documents?page=1",
+        "last": "https://app.akaunting.com/api/documents?page=1",
+        "prev": null,
+        "next": null
+    },
+    "meta": {
+        "current_page": 1,
+        "from": 1,
+        "last_page": 1,
+        "links": [
+            {
+                "url": null,
+                "label": "Previous",
+                "active": false
+            },
+            {
+                "url": "https://app.akaunting.com/api/documents?page=1",
+                "label": "1",
+                "active": true
+            },
+            {
+                "url": null,
+                "label": "Next",
+                "active": false
+            }
+        ],
+        "path": "https://app.akaunting.com/api/documents",
+        "per_page": 25,
+        "to": 1,
+        "total": 1
+    }
+}
+```
+
+**Get Bill**
+
+`GET {{akaunting_url}}/documents/{{akaunting_document_id}}?search=type:bill`
+
+**Authorization**
+- Basic Auth
+  - Username: {{akaunting_email}}
+  - Password: {{akaunting_password}}
+
+**Request Headers**
+- `X-Company`: {{akaunting_company_id}}
+
+**Query Parameters**
+- `search`: `type:bill`
+
+**Code Snippet (PHP)**
+```php
+<?php
+$client = new Client();
+$headers = [
+  'X-Company' => '399523',
+  'Authorization' => '[[Authorization-masked-secret]]'
+];
+$request = new Request('GET', 'https://app.akaunting.com/api/documents/{{akaunting_document_id}}?search=type:bill', $headers);
+$res = $client->sendAsync($request)->wait();
+echo $res->getBody();
+```
+
+**Example Response**
+```json
+{
+    "data": {
+        "id": 3769103,
+        "company_id": 399523,
+        "type": "bill",
+        "document_number": "BILL-00001",
+        "order_number": null,
+        "status": "paid",
+        "issued_at": "2026-06-20T15:31:11+01:00",
+        "due_at": "2026-06-20T15:31:11+01:00",
+        "amount": 20,
+        "amount_formatted": "$20.00",
+        "category_id": 2479262,
+        "currency_code": "USD",
+        "currency_rate": 1,
+        "contact_id": 2380643,
+        "contact_name": "James Sendu",
+        "contact_email": null,
+        "contact_tax_number": null,
+        "contact_phone": null,
+        "contact_address": null,
+        "contact_city": null,
+        "contact_zip_code": null,
+        "contact_state": null,
+        "contact_country": "ZW",
+        "notes": null,
+        "attachment": false,
+        "created_from": "core::ui",
+        "created_by": 419518,
+        "created_at": "2026-06-20T15:31:11+01:00",
+        "updated_at": "2026-06-20T15:31:25+01:00",
+        "category": {
+            "id": 2479262,
+            "company_id": 399523,
+            "name": "Other",
+            "type": "expense",
+            "color": "#e5e5e5",
+            "enabled": true,
+            "parent_id": null,
+            "created_from": "core::seed",
+            "created_by": 2,
+            "created_at": "2026-06-19T13:27:06+01:00",
+            "updated_at": "2026-06-19T13:27:06+01:00"
+        },
+        "currency": {
+            "id": 1293248,
+            "company_id": 399523,
+            "name": "US Dollar",
+            "code": "USD",
+            "rate": 1,
+            "enabled": true,
+            "precision": 2,
+            "symbol": "$",
+            "symbol_first": 1,
+            "decimal_mark": ".",
+            "thousands_separator": ",",
+            "created_from": "core::seed",
+            "created_by": 2,
+            "created_at": "2026-06-19T13:27:06+01:00",
+            "updated_at": "2026-06-19T13:27:06+01:00"
+        },
+        "contact": {
+            "id": 2380643,
+            "company_id": 399523,
+            "user_id": null,
+            "type": "vendor",
+            "name": "James Sendu",
+            "email": null,
+            "tax_number": null,
+            "phone": null,
+            "address": null,
+            "website": null,
+            "currency_code": "USD",
+            "enabled": true,
+            "reference": null,
+            "created_from": "core::ui",
+            "created_by": 419518,
+            "created_at": "2026-06-20T15:30:33+01:00",
+            "updated_at": "2026-06-20T15:30:33+01:00",
+            "contact_persons": {
+                "data": []
+            }
+        },
+        "histories": {
+            "data": [
+                {
+                    "id": 8727288,
+                    "company_id": 399523,
+                    "type": "bill",
+                    "document_id": 3769103,
+                    "status": "draft",
+                    "notify": 0,
+                    "description": "BILL-00001 added!",
+                    "created_from": "core::ui",
+                    "created_by": 419518,
+                    "created_at": "2026-06-20T15:31:11+01:00",
+                    "updated_at": "2026-06-20T15:31:11+01:00"
+                },
+                {
+                    "id": 8727289,
+                    "company_id": 399523,
+                    "type": "bill",
+                    "document_id": 3769103,
+                    "status": "received",
+                    "notify": 0,
+                    "description": "Bill marked as received!",
+                    "created_from": "core::ui",
+                    "created_by": 419518,
+                    "created_at": "2026-06-20T15:31:16+01:00",
+                    "updated_at": "2026-06-20T15:31:16+01:00"
+                },
+                {
+                    "id": 8727290,
+                    "company_id": 399523,
+                    "type": "bill",
+                    "document_id": 3769103,
+                    "status": "paid",
+                    "notify": 0,
+                    "description": "$20.00 Payment",
+                    "created_from": "core::ui",
+                    "created_by": 419518,
+                    "created_at": "2026-06-20T15:31:25+01:00",
+                    "updated_at": "2026-06-20T15:31:25+01:00"
+                }
+            ]
+        },
+        "items": {
+            "data": [
+                {
+                    "id": 69703395,
+                    "company_id": 399523,
+                    "type": "bill",
+                    "document_id": 3769103,
+                    "item_id": 5848874,
+                    "name": "Electricity",
+                    "description": "Electricity",
+                    "price": 20,
+                    "price_formatted": "$20.00",
+                    "total": 20,
+                    "total_formatted": "$20.00",
+                    "created_from": "core::ui",
+                    "created_by": 419518,
+                    "created_at": "2026-06-20T15:31:11+01:00",
+                    "updated_at": "2026-06-20T15:31:11+01:00",
+                    "taxes": {
+                        "data": []
+                    }
+                }
+            ]
+        },
+        "item_taxes": {
+            "data": []
+        },
+        "totals": {
+            "data": [
+                {
+                    "id": 135807479,
+                    "company_id": 399523,
+                    "type": "bill",
+                    "document_id": 3769103,
+                    "code": "sub_total",
+                    "name": "invoices.sub_total",
+                    "amount": 20,
+                    "amount_formatted": "$20.00",
+                    "sort_order": 1,
+                    "created_from": "core::ui",
+                    "created_by": 419518,
+                    "created_at": "2026-06-20T15:31:11+01:00",
+                    "updated_at": "2026-06-20T15:31:11+01:00"
+                },
+                {
+                    "id": 135807480,
+                    "company_id": 399523,
+                    "type": "bill",
+                    "document_id": 3769103,
+                    "code": "total",
+                    "name": "invoices.total",
+                    "amount": 20,
+                    "amount_formatted": "$20.00",
+                    "sort_order": 2,
+                    "created_from": "core::ui",
+                    "created_by": 419518,
+                    "created_at": "2026-06-20T15:31:11+01:00",
+                    "updated_at": "2026-06-20T15:31:11+01:00"
+                }
+            ]
+        },
+        "transactions": {
+            "data": [
+                {
+                    "id": 7108991,
+                    "number": "TRA-00026",
+                    "company_id": 399523,
+                    "type": "expense",
+                    "account_id": 497848,
+                    "paid_at": "2026-06-20T15:31:25+01:00",
+                    "amount": 20,
+                    "amount_formatted": "$20.00",
+                    "currency_code": "USD",
+                    "currency_rate": 1,
+                    "document_id": 3769103,
+                    "contact_id": 2380643,
+                    "description": null,
+                    "category_id": 2479262,
+                    "payment_method": "offline-payments.cash.1",
+                    "reference": null,
+                    "parent_id": 0,
+                    "split_id": null,
+                    "attachment": false,
+                    "created_from": "core::ui",
+                    "created_by": 419518,
+                    "created_at": "2026-06-20T15:31:25+01:00",
+                    "updated_at": "2026-06-20T15:31:25+01:00",
+                    "account": {
+                        "id": 497848,
+                        "company_id": 399523,
+                        "type": "bank",
+                        "name": "Cash",
+                        "number": "1",
+                        "currency_code": "USD",
+                        "opening_balance": 0,
+                        "opening_balance_formatted": "$0.00",
+                        "current_balance": -20,
+                        "current_balance_formatted": "-$20.00",
+                        "bank_name": "Cash",
+                        "bank_phone": null,
+                        "bank_address": null,
+                        "enabled": true,
+                        "created_from": "core::seed",
+                        "created_by": 2,
+                        "created_at": "2026-06-19T13:27:06+01:00",
+                        "updated_at": "2026-06-19T13:27:06+01:00"
+                    },
+                    "category": {
+                        "id": 2479262,
+                        "company_id": 399523,
+                        "name": "Other",
+                        "type": "expense",
+                        "color": "#e5e5e5",
+                        "enabled": true,
+                        "parent_id": null,
+                        "created_from": "core::seed",
+                        "created_by": 2,
+                        "created_at": "2026-06-19T13:27:06+01:00",
+                        "updated_at": "2026-06-19T13:27:06+01:00"
+                    },
+                    "currency": {
+                        "id": 1293248,
+                        "company_id": 399523,
+                        "name": "US Dollar",
+                        "code": "USD",
+                        "rate": 1,
+                        "enabled": true,
+                        "precision": 2,
+                        "symbol": "$",
+                        "symbol_first": 1,
+                        "decimal_mark": ".",
+                        "thousands_separator": ",",
+                        "created_from": "core::seed",
+                        "created_by": 2,
+                        "created_at": "2026-06-19T13:27:06+01:00",
+                        "updated_at": "2026-06-19T13:27:06+01:00"
+                    },
+                    "contact": {
+                        "id": 2380643,
+                        "company_id": 399523,
+                        "user_id": null,
+                        "type": "vendor",
+                        "name": "James Sendu",
+                        "email": null,
+                        "phone": null,
+                        "address": null,
+                        "website": null,
+                        "currency_code": "USD",
+                        "enabled": true,
+                        "reference": null,
+                        "created_from": "core::ui",
+                        "created_by": 419518,
+                        "created_at": "2026-06-20T15:30:33+01:00",
+                        "updated_at": "2026-06-20T15:30:33+01:00",
+                        "contact_persons": {
+                            "data": []
+                        }
+                    },
+                    "taxes": {
+                        "data": []
+                    }
+                }
+            ]
+        },
+        "journals": {
+            "data": [
+                {
+                    "id": 6477446,
+                    "account_id": 3862707,
+                    "account_name": "Accounts Payable",
+                    "entry_type": "total",
+                    "debit": null,
+                    "credit": 20,
+                    "currency_code": "USD"
+                },
+                {
+                    "id": 6477447,
+                    "account_id": 3862727,
+                    "account_name": "General Expenses",
+                    "entry_type": "item",
+                    "debit": 20,
+                    "credit": null,
+                    "currency_code": "USD"
+                }
+            ]
+        }
+    }
+}
+```
+
+**Create Bill**
+
+`POST {{akaunting_url}}/documents?type=bill&search=type:bill&category_id={{category_id}}&document_number=BILL-00001&status=draft&issued_at=2021-10-21&due_at=2021-10-29&account_id=1&currency_code=EUR&currency_rate=1&notes=This is note for bill&contact_id=1&contact_name=Name&contact_email=mail@mail.com&contact_address=Client address&items[0][item_id]=1&items[0][name]=Service&items[0][quantity]=2&items[0][price]=12&items[0][total]=24&items[0][discount]=0&items[0][description]=This is custom item description&items[0][tax_ids][0]=1&items[0][tax_ids][1]=2`
+
+**Authorization**
+- Basic Auth
+  - Username: {{akaunting_email}}
+  - Password: {{akaunting_password}}
+
+**Request Headers**
+- `X-Company`: {{akaunting_company_id}}
+
+**Query Parameters**
+
+| Parameter | Description | Example |
+|-----------|-------------|---------|
+| `type` | Document type | `bill` |
+| `search` | Filter type | `type:bill` |
+| `category_id` | Expense category ID | `1` |
+| `document_number` | Bill number | `BILL-00001` |
+| `status` | Status | `draft` |
+| `issued_at` | Issue date | `2021-10-21` |
+| `due_at` | Due date | `2021-10-29` |
+| `account_id` | Account ID | `1` |
+| `currency_code` | Currency code | `EUR` |
+| `currency_rate` | Currency rate | `1` |
+| `notes` | Bill notes | `This is note for bill` |
+| `contact_id` | Vendor ID | `1` |
+| `contact_name` | Vendor name | `Name` |
+| `contact_email` | Vendor email | `mail@mail.com` |
+| `contact_address` | Vendor address | `Client address` |
+| `items[0][item_id]` | Item ID | `1` |
+| `items[0][name]` | Item name | `Service` |
+| `items[0][quantity]` | Quantity | `2` |
+| `items[0][price]` | Unit price | `12` |
+| `items[0][total]` | Line total | `24` |
+| `items[0][discount]` | Discount | `0` |
+| `items[0][description]` | Item description | `This is custom item description` |
+| `items[0][tax_ids][0]` | Tax ID | `1` |
+| `items[0][tax_ids][1]` | Tax ID | `2` |
+
+**Body (form-data)**
+- `attachment[0]`: File attachment (e.g., `file.png`)
+
+> **💡 Paying a Bill:** Bills use the same underlying `/documents` endpoint as invoices. To record a payment against a bill, use the same document-scoped payment endpoint:
+> ```
+> POST {{akaunting_url}}/documents/{{bill_id}}/transactions
+> ```
+> See [Add Invoice Payment](#invoices-documents) above for the full parameter reference. The only difference is that bill payments are typically expense transactions rather than income.
+
+**Code Snippet (PHP)**
+```php
+<?php
+$client = new Client();
+$headers = [
+  'X-Company' => '399523',
+  'Authorization' => '[[Authorization-masked-secret]]'
+];
+$options = [
+  'multipart' => [
+    [
+      'name' => 'attachment[0]',
+      'contents' => 'file.png'
+    ]
+]];
+$request = new Request('POST', 'https://app.akaunting.com/api/documents?type=bill&category_id=1&document_number=BILL-00001&search=type:bill&status=draft&issued_at=2021-10-21&due_at=2021-10-29&account_id=1&currency_code=USD&currency_rate=1&notes=This is note for invoice&contact_id=1&contact_name=Name&contact_email=mail@mail.com&contact_address=Client address&items[0][item_id]=1&items[0][name]=Service&items[0][quantity]=2&items[0][price]=12&items[0][total]=24&items[0][discount]=0&items[0][description]=This is custom item description&items[0][tax_ids][0]=1&items[0][tax_ids][1]=2', $headers);
+$res = $client->sendAsync($request, $options)->wait();
+echo $res->getBody();
+```
+
+> **⚠️ Amount Double-Counting:** Same issue as invoices — set `amount=0` to avoid doubling. The `amount` field is additive on top of item totals. In the example above, no `amount` was sent, but items (`price=12` × `quantity=2` = `24`) produced `total: 48`. To avoid unexpected totals, explicitly set `amount=0` and let items define the value.
+
+**Example Response**
+```json
+{
+    "data": {
+        "id": 3769112,
+        "company_id": 399523,
+        "type": "bill",
+        "document_number": "BILL-00001",
+        "order_number": null,
+        "status": "draft",
+        "issued_at": "2021-10-21T15:51:10+01:00",
+        "due_at": "2021-10-29T15:51:10+01:00",
+        "amount": 48,
+        "amount_formatted": "$48.00",
+        "category_id": "1",
+        "currency_code": "USD",
+        "currency_rate": 1,
+        "contact_id": "1",
+        "contact_name": "Name",
+        "contact_email": "mail@mail.com",
+        "contact_tax_number": null,
+        "contact_phone": null,
+        "contact_address": "Client address",
+        "contact_city": null,
+        "contact_zip_code": null,
+        "contact_state": null,
+        "contact_country": null,
+        "notes": "This is note for invoice",
+        "attachment": false,
+        "created_from": "core::api",
+        "created_by": 419518,
+        "created_at": "2026-06-20T15:51:10+01:00",
+        "updated_at": "2026-06-20T15:51:11+01:00",
+        "category": {
+            "id": null,
+            "company_id": null,
+            "name": "N/A",
+            "type": null,
+            "color": null,
+            "enabled": null,
+            "parent_id": null,
+            "created_from": null,
+            "created_by": null,
+            "created_at": "",
+            "updated_at": ""
+        },
+        "currency": {
+            "id": 1293248,
+            "company_id": 399523,
+            "name": "US Dollar",
+            "code": "USD",
+            "rate": 1,
+            "enabled": true,
+            "precision": 2,
+            "symbol": "$",
+            "symbol_first": 1,
+            "decimal_mark": ".",
+            "thousands_separator": ",",
+            "created_from": "core::seed",
+            "created_by": 2,
+            "created_at": "2026-06-19T13:27:06+01:00",
+            "updated_at": "2026-06-19T13:27:06+01:00"
+        },
+        "contact": {
+            "id": null,
+            "company_id": null,
+            "user_id": null,
+            "type": null,
+            "name": "N/A",
+            "email": null,
+            "tax_number": null,
+            "phone": null,
+            "address": null,
+            "website": null,
+            "currency_code": null,
+            "enabled": null,
+            "reference": null,
+            "created_from": null,
+            "created_by": null,
+            "created_at": "",
+            "updated_at": "",
+            "contact_persons": {
+                "data": []
+            }
+        },
+        "histories": {
+            "data": [
+                {
+                    "id": 8727311,
+                    "company_id": 399523,
+                    "type": "bill",
+                    "document_id": 3769112,
+                    "status": "draft",
+                    "notify": 0,
+                    "description": "BILL-00001 added!",
+                    "created_from": "core::api",
+                    "created_by": 419518,
+                    "created_at": "2026-06-20T15:51:11+01:00",
+                    "updated_at": "2026-06-20T15:51:11+01:00"
+                }
+            ]
+        },
+        "items": {
+            "data": [
+                {
+                    "id": 69703442,
+                    "company_id": 399523,
+                    "type": "bill",
+                    "document_id": 3769112,
+                    "item_id": 1,
+                    "name": "Service",
+                    "description": "This is custom item description",
+                    "price": 12,
+                    "price_formatted": "$12.00",
+                    "total": 24,
+                    "total_formatted": "$24.00",
+                    "created_from": "core::api",
+                    "created_by": 419518,
+                    "created_at": "2026-06-20T15:51:10+01:00",
+                    "updated_at": "2026-06-20T15:51:10+01:00",
+                    "taxes": {
+                        "data": []
+                    }
+                }
+            ]
+        },
+        "item_taxes": {
+            "data": []
+        },
+        "totals": {
+            "data": [
+                {
+                    "id": 135807508,
+                    "company_id": 399523,
+                    "type": "bill",
+                    "document_id": 3769112,
+                    "code": "sub_total",
+                    "name": "invoices.sub_total",
+                    "amount": 24,
+                    "amount_formatted": "$24.00",
+                    "sort_order": 1,
+                    "created_from": "core::api",
+                    "created_by": 419518,
+                    "created_at": "2026-06-20T15:51:11+01:00",
+                    "updated_at": "2026-06-20T15:51:11+01:00"
+                },
+                {
+                    "id": 135807509,
+                    "company_id": 399523,
+                    "type": "bill",
+                    "document_id": 3769112,
+                    "code": "total",
+                    "name": "invoices.total",
+                    "amount": 48,
+                    "amount_formatted": "$48.00",
+                    "sort_order": 2,
+                    "created_from": "core::api",
+                    "created_by": 419518,
+                    "created_at": "2026-06-20T15:51:11+01:00",
+                    "updated_at": "2026-06-20T15:51:11+01:00"
+                }
+            ]
+        },
+        "transactions": {
+            "data": []
+        },
+        "journals": {
+            "data": [
+                {
+                    "id": 6477458,
+                    "account_id": 3862707,
+                    "account_name": "Accounts Payable",
+                    "entry_type": "total",
+                    "debit": null,
+                    "credit": 48,
+                    "currency_code": "USD"
+                },
+                {
+                    "id": 6477459,
+                    "account_id": 3862727,
+                    "account_name": "General Expenses",
+                    "entry_type": "item",
+                    "debit": 24,
+                    "credit": null,
+                    "currency_code": "USD"
+                }
+            ]
+        }
+    }
+}
+```
+
+---
 
 ### Transactions
 

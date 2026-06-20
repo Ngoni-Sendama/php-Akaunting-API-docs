@@ -56,6 +56,11 @@ When using this repo as context:
 - Delete invoice
 - Add invoice payment
 
+### Bills
+- List bills
+- Get bill
+- Create bill
+
 ### Transactions
 - Create expense transaction
 - List expense transactions
