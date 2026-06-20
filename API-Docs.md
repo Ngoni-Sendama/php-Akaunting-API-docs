@@ -2,28 +2,17 @@
 
 ## Table of Contents
 
-- [Overview](#overview)
-- [Environment Configuration](#environment-configuration)
-- [API Endpoints](#api-endpoints)
-  - [Users](#users)
-    - [List Users](#list-users)
-  - [Items](#items)
-    - [List Items](#list-items)
-  - [Companies](#companies)
-    - [List Companies](#list-companies)
-  - [Customers (Contacts)](#customers-contacts)
-    - [List Customers](#list-customers)
-    - [Create Customer](#create-customer)
-  - [Invoices (Documents)](#invoices-documents)
-    - [List Invoices](#list-invoices)
-    - [Create Invoice](#create-invoice)
-    - [Get Invoice](#get-invoice)
-    - [Update Invoice](#update-invoice)
-    - [Add Invoice Payment](#add-invoice-payment)
-    - [Delete Invoice](#delete-invoice)
-  - [Transactions](#transactions)
-    - [Create Expense Transaction](#create-expense-transaction)
-    - [List Expense Transactions](#list-expense-transactions)
+- [Using Akaunting API in Laravel Projects](#using-akaunting-api-in-laravel-projects)
+  - [Table of Contents](#table-of-contents)
+  - [Overview](#overview)
+  - [Environment Configuration](#environment-configuration)
+  - [API Endpoints](#api-endpoints)
+    - [Users](#users)
+    - [Items](#items)
+    - [Companies](#companies)
+    - [Customers (Contacts)](#customers-contacts)
+    - [Invoices (Documents)](#invoices-documents)
+    - [Transactions](#transactions)
 
 ## Overview
 This documentation explains how to integrate the Akaunting API into a Laravel application. Akaunting is an open-source accounting software, and its API allows you to programmatically manage invoices, contacts, accounts, and other financial data.
@@ -1147,3 +1136,121 @@ echo $res->getBody();
     }
 }
 ```
+
+---
+
+## Integration Notes (Lessons Learned)
+
+> These are critical findings from real-world integration. Read before building any Akaunting integration.
+
+### 1. Authentication: HTTP Basic Auth
+
+Akaunting uses **Basic Auth** — not API tokens or OAuth.
+
+```
+Authorization: Basic base64(email:password)
+```
+
+In Laravel:
+```php
+Http::withBasicAuth($email, $password)
+```
+
+### 2. All Requests Require `X-Company` Header
+
+Every endpoint (except `/companies`) requires the `X-Company` header with the company ID:
+
+```php
+->withHeaders(['X-Company' => (string) $companyId])
+```
+
+### 3. Content-Type: Multipart Form-Data
+
+**All POST/PUT requests must use `multipart/form-data`**, not JSON. Akaunting rejects JSON payloads for most write operations.
+
+In Laravel:
+```php
+$multipart = collect($payload)->map(fn ($value, $key) => [
+    'name' => $key,
+    'contents' => (string) $value,
+])->values()->all();
+
+Http::withBasicAuth($email, $password)
+    ->withHeaders(['X-Company' => $companyId])
+    ->attach('Content-Type', 'multipart/form-data')
+    ->post($url, $multipart);
+```
+
+### 4. Invoice `amount` Field is Additive (Double-Counting Bug)
+
+**CRITICAL:** The `amount` parameter in Create Invoice is **added on top of item totals**, not used as the total.
+
+- If you send `amount=50` and an item with `price=50`, the invoice total becomes **100** (50 + 50)
+- This is confirmed by the official API docs: `amount=2` + `items[0][total]=2` = `total: 4`
+
+**Fix:** Set `amount=0` and let items define the total:
+
+```php
+$payload = [
+    'amount' => '0',  // Don't send the total here — items define it
+    // ... other fields
+];
+```
+
+### 5. Invoice Status: Create as `draft`, Then Pay
+
+- Creating an invoice with `status=paid` means Akaunting considers it already paid ($0 remaining)
+- You **cannot** add a payment to a `paid` invoice — it will fail with "amount passes the total: $0.00"
+- **Correct flow:** Create invoice as `draft` → Add payment → Invoice becomes `paid`
+
+### 6. Payment Endpoint is Document-Scoped
+
+Payments for invoices must be posted to the **document-specific** endpoint:
+
+```
+POST /documents/{document_id}/transactions
+```
+
+NOT to `/transactions` — that endpoint is for standalone transactions and will fail with:
+> "This endpoint cannot be added to a document."
+
+### 7. Payment Endpoint Requires `currency` (Full Name)
+
+The payment endpoint requires a `currency` field with the **full currency name**, not just the code:
+
+| Field | Value |
+|-------|-------|
+| `currency_code` | `USD` |
+| `currency` | `US Dollar` |
+
+### 8. Payment Methods
+
+Available payment methods for offline payments:
+
+| Method | Value |
+|--------|-------|
+| Cash | `offline-payments.cash.1` |
+| Bank Transfer | `offline-payments.bank-transfer.1` (not confrirmed) |
+
+### 9. Browser Autofill Prevention
+
+Akaunting credential inputs (email/password) will be auto-filled by browsers. To prevent this:
+
+```html
+<!-- Hidden dummy fields to capture browser autofill -->
+<input type="text" name="fake_usernameremembered" style="position:absolute;left:-9999px;" tabindex="-1" autocomplete="off">
+<input type="password" name="fake_passwordremembered" style="position:absolute;left:-9999px;" tabindex="-1" autocomplete="new-password">
+
+<!-- Real fields -->
+<input type="email" name="api_key" autocomplete="new-email">
+<input type="password" name="api_secret" autocomplete="new-password">
+```
+
+### 10. Required Fields Summary
+
+| Endpoint | Required Fields |
+|----------|----------------|
+| Create Customer | `name`, `email`, `type=customer`, `currency_code` |
+| Create Invoice | `type=invoice`, `contact_id`, `status`, `issued_at`, `due_at`, `items[]`, `amount` |
+| Add Payment | `company_id`, `amount`, `document_id`, `currency_code`, `currency`, `payment_method`, `paid_at` |
+| Create Expense | `type=expense`, `account_id`, `category_id`, `contact_id`, `paid_at` |
