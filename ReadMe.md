@@ -48,6 +48,10 @@ When using this repo as context:
 - List customers
 - Create customer
 
+### Vendors (Contacts)
+- List vendors
+- Create vendor
+
 ### Invoices (Documents)
 - List invoices
 - Create invoice

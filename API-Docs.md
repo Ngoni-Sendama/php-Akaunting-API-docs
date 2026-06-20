@@ -552,6 +552,111 @@ echo $res->getBody();
 }
 ```
 
+### Vendors (Contacts)
+
+**List Vendors**
+
+`GET {{akaunting_url}}/contacts?search=type:vendor&page={{akaunting_page}}&limit={{akaunting_limit}}`
+
+**Authorization**
+- Basic Auth
+  - Username: {{akaunting_email}}
+  - Password: {{akaunting_password}}
+
+**Request Headers**
+- `X-Company`: {{akaunting_company_id}}
+
+**Query Parameters**
+- `search`: `type:vendor`
+- `page`: {{akaunting_page}}
+- `limit`: {{akaunting_limit}}
+
+**Code Snippet (PHP)**
+```php
+<?php
+$client = new Client();
+$headers = [
+  'X-Company' => '399523',
+  'Authorization' => '[[Authorization-masked-secret]]'
+];
+$request = new Request('GET', 'https://app.akaunting.com/api/contacts?search=type:vendor&page=1&limit=25', $headers);
+$res = $client->sendAsync($request)->wait();
+echo $res->getBody();
+```
+
+**Example Response**
+```json
+{
+    "data": [
+        {
+            "id": 2380643,
+            "company_id": 399523,
+            "user_id": null,
+            "type": "vendor",
+            "name": "James Sendu",
+            "email": null,
+            "tax_number": null,
+            "phone": null,
+            "address": null,
+            "website": null,
+            "currency_code": "USD",
+            "enabled": true,
+            "reference": null,
+            "created_from": "core::ui",
+            "created_by": 419518,
+            "created_at": "2026-06-20T15:30:33+01:00",
+            "updated_at": "2026-06-20T15:30:33+01:00",
+            "contact_persons": {
+                "data": []
+            }
+        }
+    ],
+    "links": {
+        "first": "https://app.akaunting.com/api/contacts?page=1",
+        "last": "https://app.akaunting.com/api/contacts?page=4",
+        "prev": null,
+        "next": null
+    },
+    "meta": {
+        "current_page": 1,
+        "from": 1,
+        "last_page": 1,
+        "per_page": 25,
+        "to": 1,
+        "total": 1
+    }
+}
+```
+
+**Create Vendor**
+
+`POST {{akaunting_url}}/contacts`
+
+**Authorization**
+- Basic Auth
+  - Username: {{akaunting_email}}
+  - Password: {{akaunting_password}}
+
+**Request Headers**
+- `X-Company`: {{akaunting_company_id}}
+
+**Query Parameters**
+- `name`: Vendor name
+- `email`: Vendor email
+- `type`: `vendor`
+- `tax_number`: Tax number
+- `currency_code`: Currency code (e.g., `USD`, `NZD`)
+- `phone`: Phone number
+- `website`: Website URL
+- `address`: Street address
+- `city`: City
+- `post_code`: Postal code
+- `country`: Country name
+- `enabled`: `1` (enabled) or `0` (disabled)
+- `reference`: Custom reference
+
+> **Note:** Vendors use the exact same `/contacts` endpoint as customers. The only difference is `type=vendor` instead of `type=customer`. See [Create Customer](#customers-contacts) for the PHP code snippet and response structure.
+
 ### Invoices (Documents)
 
 **List Invoices**
@@ -1049,6 +1154,8 @@ echo $res->getBody();
 ```
 
 ### Bills
+
+> **Vendors Required:** Bills are payables to vendors. The `contact_id` in a bill refers to a contact with `type=vendor`. Use the [List Vendors](#vendors-contacts) endpoint to find vendors, or [Create Vendor](#vendors-contacts) to add new ones.
 
 **List Bills**
 
